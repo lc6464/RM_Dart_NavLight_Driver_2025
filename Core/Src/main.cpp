@@ -40,6 +40,9 @@ int main(void) {
 
 	RegisterUserControlCallbacks();
 
+	HAL_UARTEx_ReceiveToIdle_DMA(&huart1, uart_data_buffer.data(), uart_data_buffer.size());
+	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
+
 	while (1) {
 
 		if (Status::getFanStatus() != Status::lastFanStatus) {

@@ -2,35 +2,29 @@
 
 #include "Button_Shared.h"
 #include "Status.h"
+#include "UserControlCallback.h"
 
-enum class LastBrightness {
-	EightyPercent,
-	SixtyPercent,
-	FortyPercent,
-	None
-};
-
-static LastBrightness lastBrightness = LastBrightness::None;
+LastBrightness lastBrightnessStatus = LastBrightness::None;
 
 inline static void keyButtonShortPressCallback(void) {
 	Status::target = 0;
-	lastBrightness = LastBrightness::None;
+	lastBrightnessStatus = LastBrightness::None;
 }
 
 inline static void keyButtonLongPressCallback(void) {
-	switch (lastBrightness) {
+	switch (lastBrightnessStatus) {
 	case LastBrightness::SixtyPercent:
 		Status::target = 40;
-		lastBrightness = LastBrightness::FortyPercent;
+		lastBrightnessStatus = LastBrightness::FortyPercent;
 		break;
 	case LastBrightness::FortyPercent:
 	case LastBrightness::None:
 		Status::target = 80;
-		lastBrightness = LastBrightness::EightyPercent;
+		lastBrightnessStatus = LastBrightness::EightyPercent;
 		break;
 	case LastBrightness::EightyPercent:
 		Status::target = 60;
-		lastBrightness = LastBrightness::SixtyPercent;
+		lastBrightnessStatus = LastBrightness::SixtyPercent;
 		break;
 	}
 }

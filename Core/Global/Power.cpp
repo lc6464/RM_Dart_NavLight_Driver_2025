@@ -9,8 +9,8 @@ namespace Power {
 		// ADC 采样值转换为电压值
 		float voltage = adc_value * 3.3f / 4096;
 
-		// 上 20k 下 20k 电压分压
-		auto result = voltage * (20 + 20) / 20;
+		// 上 47k 下 5.6k 电压分压
+		auto result = voltage * (47.0f + 5.6f) / 5.6f;
 
 		power_voltage = result;
 		return result;
