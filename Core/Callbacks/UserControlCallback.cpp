@@ -4,35 +4,35 @@
 #include "Status.h"
 
 enum class LastBrightness {
-	Full,
 	EightyPercent,
 	SixtyPercent,
+	FortyPercent,
 	None
 };
 
 static LastBrightness lastBrightness = LastBrightness::None;
 
 inline static void keyButtonShortPressCallback(void) {
-	switch (lastBrightness) {
-	case LastBrightness::EightyPercent:
-		Status::brightness = 60;
-		lastBrightness = LastBrightness::SixtyPercent;
-		break;
-	case LastBrightness::SixtyPercent:
-	case LastBrightness::None:
-		Status::brightness = 100;
-		lastBrightness = LastBrightness::Full;
-		break;
-	case LastBrightness::Full:
-		Status::brightness = 80;
-		lastBrightness = LastBrightness::EightyPercent;
-		break;
-	}
+	Status::target = 0;
+	lastBrightness = LastBrightness::None;
 }
 
 inline static void keyButtonLongPressCallback(void) {
-	Status::brightness = 0;
-	lastBrightness = LastBrightness::None;
+	switch (lastBrightness) {
+	case LastBrightness::SixtyPercent:
+		Status::target = 40;
+		lastBrightness = LastBrightness::FortyPercent;
+		break;
+	case LastBrightness::FortyPercent:
+	case LastBrightness::None:
+		Status::target = 80;
+		lastBrightness = LastBrightness::EightyPercent;
+		break;
+	case LastBrightness::EightyPercent:
+		Status::target = 60;
+		lastBrightness = LastBrightness::SixtyPercent;
+		break;
+	}
 }
 
 // 注册用户控制回调函数

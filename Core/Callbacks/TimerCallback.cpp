@@ -1,5 +1,6 @@
 #include "tim.h"
 
+#include <algorithm>
 #include <array>
 #include <cstring>
 
@@ -17,10 +18,24 @@ inline static void TIM4_Update_Callback() {
 		tim4_scaler_100 = 0;
 
 		Status::fanAutoControl();
-		HAL_GPIO_WritePin(Fan_Enable_GPIO_Port, Fan_Enable_Pin, Status::getFanStatus() ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
-		__HAL_TIM_SetCompare(&htim1, Main_LED_Channel, Status::brightness);
-		HAL_GPIO_WritePin(LED_Enable_GPIO_Port, LED_Enable_Pin, Status::brightness == 0 ? GPIO_PIN_RESET : GPIO_PIN_SET);
+		auto diff = std::abs(Status::target - Status::brightness);
+		auto step = 0;
+		if (Status::target == 0) {
+			step = 50;
+		} else if (diff > 50) {
+			step = 20;
+		} else if (diff > 20) {
+			step = 10;
+		} else {
+			step = 5;
+		}
+
+		if (Status::target > Status::brightness) {
+			Status::brightness = std::min(static_cast<int8_t>(Status::brightness + step), Status::target);
+		} else if (Status::target < Status::brightness) {
+			Status::brightness = std::max(static_cast<int8_t>(Status::brightness - step * 2), Status::target);
+		}
 	}
 }
 

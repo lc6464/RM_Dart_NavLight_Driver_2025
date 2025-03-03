@@ -1,8 +1,11 @@
 #include "Status.h"
 
 namespace Status {
-	uint8_t brightness = 0;
+	int8_t target = 0;
+	int8_t brightness = 0;
+	int8_t lastBrightness = 0;
 	bool isFanOn = false;
+	bool lastFanStatus = false;
 
 	// 风扇关灯后保持
 	uint16_t fanOffTick = 0;

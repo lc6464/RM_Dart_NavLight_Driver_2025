@@ -6,6 +6,7 @@
 #include "gpio.h"
 
 #include "data.h"
+#include "Status.h"
 #include "UserControlCallback.h"
 
 /**
@@ -37,7 +38,32 @@ int main(void) {
 
 	HAL_TIM_Base_Start_IT(&htim4); // 1kHz
 
+	RegisterUserControlCallbacks();
+
 	while (1) {
+
+		if (Status::getFanStatus() != Status::lastFanStatus) {
+			Status::lastFanStatus = Status::getFanStatus();
+			// 风扇状态改变
+
+			HAL_GPIO_WritePin(Fan_Enable_GPIO_Port, Fan_Enable_Pin, Status::getFanStatus() ? GPIO_PIN_SET : GPIO_PIN_RESET);
+
+			// 风扇开关指示灯
+			__HAL_TIM_SetCompare(&htim3, LED2_Channel, Status::getFanStatus() ? 1000 : 0);
+		}
+
+		HAL_Delay(10);
+
+		if (Status::brightness != Status::lastBrightness) {
+			Status::lastBrightness = Status::brightness;
+			// 亮度改变
+
+			__HAL_TIM_SetCompare(&htim1, Main_LED_Channel, Status::brightness);
+			HAL_GPIO_WritePin(LED_Enable_GPIO_Port, LED_Enable_Pin, Status::brightness == 0 ? GPIO_PIN_RESET : GPIO_PIN_SET);
+
+			// 主灯开关指示灯
+			__HAL_TIM_SetCompare(&htim3, LED1_Channel, Status::brightness == 0 ? 0 : 1000);
+		}
 
 	}
 }

@@ -66,6 +66,7 @@ void Error_Handler(void);
 #define Fan_Enable_GPIO_Port GPIOA
 #define Key_Pin GPIO_PIN_0
 #define Key_GPIO_Port GPIOB
+#define Key_EXTI_IRQn EXTI0_IRQn
 #define LED_Enable_Pin GPIO_PIN_15
 #define LED_Enable_GPIO_Port GPIOB
 
